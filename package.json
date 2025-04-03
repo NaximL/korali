@@ -1,0 +1,46 @@
+{
+  "name": "CoralExplorer",
+  "version": "1.0.0",
+  "description": "My Electron App with Express",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "electron": "^25.9.8",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.CoralExplorer.name",
+    "productName": "CoralExplorer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.js",
+      "web/html/index.html",
+      "web/css/styles.css",
+      "web/js/main.js",
+      "web/imgs/akula.png",
+      "web/imgs/trash.png",
+      "web/imgs/enemy_fish.png",
+      "web/imgs/coral_reef.jpeg",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+  "win": {
+    "target": "nsis",
+   "icon": "web/imgs/akula.png"
+  },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
