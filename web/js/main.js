@@ -3,7 +3,7 @@ let ENEM_list = []
 let TRASH_list = []
 const SIZE = 50;
 let score = 0;
-
+const icons_transh = ['trash1','trash2']
 const coral_facts = [
     "Коралові рифи ростуть дуже повільно. Великі рифи ростуть зі швидкістю 1-2 см на рік.",
     "Деякі тварини у рифі мають симбіотичні стосунки, допомагаючи один одному вижити.",
@@ -39,7 +39,7 @@ const start_game =  async () => {
 
 const render = async (listr,clases) => {
  const list =await listr.map((item) => {
-return `<div style="transform:translate(${item.x}px, ${item.y}px" class="${clases}" ></div>`}).join('');
+ return `<div style="transform:translate(${item.x}px, ${item.y}px)" class="${clases} ${item.icon}" ></div>`}).join('');
  document.getElementsByClassName('enemy_teretor')[0].innerHTML = document.getElementsByClassName('enemy_teretor')[0].innerHTML +list;
 }
 
@@ -98,12 +98,30 @@ const create_trash = () => {
             }
 
         } while (!valid);
-
+        const icon = icons_transh[random(0,1)]
         const factIndex = random(0, coral_facts.length - 1);
         const fact = coral_facts.splice(factIndex, 1)[0];
-        TRASH_list.push({ x, y, fact });
+        TRASH_list.push({ x, y, fact,icon });
     }
 };
+
+const start_game_pre_relise = ()=>{
+    const logo = document.getElementsByClassName("logo")[0]
+    const bitt = document.getElementsByClassName("menu_butts")[0]
+    logo.classList.add("anim3");
+    bitt.style.transform = "translate(400px,0px)"
+
+    document.body.style.backgroundColor= "rgba(128, 128, 128, 0.5)";
+    setTimeout(()=>{
+        logo.remove();
+        bitt.remove();
+        document.getElementsByClassName("menu")[0].style = 'display:none'
+
+        document.body.style.backgroundColor= "rgba(128, 128, 128, 0.5)";
+        document.getElementsByClassName("game_main_conttent")[0].style = 'display:block'
+        otchet();
+    },1800)
+}
 
 
 function col(el1, el2) {
@@ -186,7 +204,11 @@ function drawCircle(x, y) {
 }
 
 const final = ()=>{
-alert("ти виграв,красавчик, я спать")
+    alert("ти виграв,красавчик, я спать")
+}
+
+const nefinal = ()=>{
+    alert("ти програв, не красавчик, я спать")
 }
 
 let isclk = false;
@@ -196,14 +218,42 @@ const closedf = () => {
     document.getElementsByClassName("modal_cont")[0].style = "display: none";
     document.getElementsByClassName("back")[0].classList.remove("visible");
 
-};
+}
+
+document.querySelector('#exi').addEventListener('mouseenter', () => {
+document.getElementsByClassName("logo")[0].src = "/web/imgs/akula_plachet.png"
+document.getElementsByClassName("logo")[0].classList.add("shakes")
+});
+
+document.querySelector('#exi').addEventListener('mouseleave', () => {
+document.getElementsByClassName("logo")[0].src = "/web/imgs/akula.png"
+    document.getElementsByClassName("logo")[0].classList.remove("shakes")
+
+});
+
+const element = document.querySelector('.menu_butt h1');
+
+element.addEventListener('mouseenter', () => {
+    if (random(1,2)==1) {
+    document.getElementsByClassName("logo")[0].classList.add("anim");
+    }
+    else {
+    document.getElementsByClassName("logo")[0].classList.add("anim2");
+    }
+});
+
+element.addEventListener('mouseleave', () => {
+    document.getElementsByClassName("logo")[0].classList.remove("anim");
+    document.getElementsByClassName("logo")[0].classList.remove("anim2");
+});
 
 
 document.addEventListener("DOMContentLoaded", () => {    
-    const p = document.getElementsByClassName('player')[0]
-    p.style.transform = `translate(${window.innerWidth/2.15}px, ${window.innerHeight-120}px)`;
+    const p = document.getElementsByClassName('player')[0]    
+    p.style.left = `${window.innerWidth/2.15}px`;   
+    p.style.top = `${window.innerHeight-120}px`;
 
-    otchet();
+
     setInterval(()=>{
         TRASH_list.forEach((trash, index) => {
             const e_trash = document.getElementsByClassName('trash')[index];
@@ -211,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementsByClassName("modal_cont")[0].style = "display:flex"
                 document.getElementsByClassName("back")[0].classList.add("visible")
                 document.getElementById("modal_text").innerText = trash.fact;
+                
                 score+=10;
                 document.getElementsByClassName("Score")[0].innerText = `Score: ${score}`
                 if (score===50) {
@@ -221,30 +272,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
         });
+        ENEM_list.forEach((trash, index) => {
+            const e_nemy = document.getElementsByClassName('enemy')[index];
+            if (col(p, e_nemy)) {
+
+                p.classList.add("shake")
+                setTimeout(()=>{
+
+                    p.classList.remove("shake")
+                },1000)
+                score-=10;
+                document.getElementsByClassName("Score")[0].innerText = `Score: ${score}`
+                if (score===-50) {
+                    nefinal();
+                }
+                e_nemy.style.display = "none";
+                
+
+            }
+        });
     },1)
 });
 
-
 document.addEventListener("click", (event) => {
-    if (isclk) {isclk=false;return}
-    if (!loading) return; 
+    if (isclk) {
+        isclk = false;
+        return;
+    }
+    if (!loading) return;
 
-    const player = document.getElementsByClassName('player')[0];
+    const player = document.querySelector('.player');
     const playerRect = player.getBoundingClientRect();
+
     const playerX = playerRect.left + playerRect.width / 2;
     const playerY = playerRect.top + playerRect.height / 2;
 
-    let x = event.clientX - 33;
-    let y = event.clientY - 30;
+    const x = event.clientX;
+    const y = event.clientY;
 
     const ds = Math.sqrt((x - playerX) ** 2 + (y - playerY) ** 2);
     let flip = x > playerX ? "scaleX(-1)" : "scaleX(1)";
+
     if (ds > 200) {
         awg();
         return;
     }
+
     drawCircle(playerX, playerY);
-    player.style.transform = `translate(${x}px, ${y}px) ${flip}`;
+    player.style.left = `${x - playerRect.width / 2}px`;
+    player.style.top = `${y - playerRect.height / 2}px`;
+    player.style.transform = `${flip}`;
 });
 
 const awg = () => {
@@ -255,3 +332,7 @@ const awg = () => {
         player.classList.remove("anim");
     }, 350);
 };
+
+document.getElementById('exi').addEventListener('click', () => {
+    window.electronAPI.closeApp();
+});

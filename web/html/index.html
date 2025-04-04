@@ -8,7 +8,19 @@
 </head>
 <body>
 
-   
+    <div class="menu">
+        <img class="logo" src="/web/imgs/akula.png">
+        <div class="menu_butts">
+        <div class="menu_butt">
+            <h1 onclick="start_game_pre_relise()">Почати гру</h1>
+            <h1 id="exi">Вийти</h1>
+        </div>
+        </div>
+    </div>
+
+
+
+<div class="game_main_conttent">
 
     <div class="modal_cont">
         <div class="modal">
@@ -16,17 +28,23 @@
         <p id="modal_text"></p>
         </div>
     </div>
+
+
  <div class="back"></div>
+
+
     <b class="Score">Score: 0</b>
     <div class="title_cont"><h1 class="wf">3</h1></div>
     <div class="game">    
         <canvas id="back_cnv"></canvas>
-        <div class="player"></div>
+        <div class="player">
+            <div class="player_kolo"></div>
+        </div>
         <div class="enemy_teretor">
 
         </div>
     </div>
-
+</div>
     <script src="/web/js/main.js"></script>
 </body>
 </html>
